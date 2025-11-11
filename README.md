@@ -2,163 +2,180 @@
 
 A Laravel-based booking platform for hairdresser appointments with basic functionality including reservation management and admin dashboard.
 
-## Features
+![Laravel](https://img.shields.io/badge/Laravel-10.x-red)
+![PHP](https://img.shields.io/badge/PHP-8.1+-blue)
+![MySQL](https://img.shields.io/badge/MySQL-5.7+-orange)
 
-- **Public Booking Form**: Accessible without authentication
-  - Collects client name, email, date, and hour
-  - Only 1 booking per hour allowed
-  - No bookings on weekends
-  - Business hours: 8:00 AM - 5:00 PM
-  
-- **Admin Dashboard**: Protected by authentication
-  - View all bookings
-  - Client information display
-  - Sortable by date and time
+## 🎯 Features
 
-## Technology Stack
+### Public Booking Form (No Authentication)
+- 📋 Collects: name, email, date, and hour
+- ⏰ Only 1 booking per hour allowed
+- 📅 No bookings on weekends
+- 🕐 Business hours only: 8:00 AM - 5:00 PM
 
-- Laravel 10
-- PHP 8.x
-- SQLite Database
-- Bootstrap 5
-- Laravel UI for authentication
+### Admin Dashboard (Authentication Required)
+- 👀 View all bookings
+- 📊 Sorted by date and time
+- 📧 Client information display
+- 📄 Pagination support
 
-## Installation
+## 🚀 Quick Start
 
-### Prerequisites
+### Windows
+```bash
+# Run the setup script
+setup.bat
+```
 
-- PHP >= 8.1
-- Composer
-- Node.js & NPM
+### Manual Installation
 
-### Setup Steps
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd hairdresser-booking
-   ```
-
-2. **Install PHP dependencies**
+1. **Install dependencies**
    ```bash
    composer install
+   npm install
    ```
 
-3. **Configure environment**
+2. **Configure environment**
    ```bash
    cp .env.example .env
+   # Update database credentials in .env
    php artisan key:generate
    ```
 
-4. **Create database**
-   The SQLite database file should already exist at `database/database.sqlite`.
-   If not, create it:
+3. **Setup database**
    ```bash
-   # Windows PowerShell
-   New-Item -Path "database\database.sqlite" -ItemType File
-   
-   # Linux/Mac
-   touch database/database.sqlite
-   ```
-
-5. **Run migrations**
-   ```bash
+   # Create database 'hairdresser' in MySQL
    php artisan migrate
-   ```
-
-6. **Create hairdresser user**
-   ```bash
    php artisan db:seed --class=HairdresserSeeder
    ```
-   
-   This creates an admin user with:
-   - **Email**: hairdresser@example.com
-   - **Password**: password
 
-7. **Install and build frontend assets**
+4. **Build assets & run**
    ```bash
-   npm install
    npm run build
-   ```
-
-8. **Start the development server**
-   ```bash
    php artisan serve
    ```
 
-9. **Access the application**
-   - Public booking form: http://localhost:8000
-   - Login: http://localhost:8000/login
-   - Admin dashboard: http://localhost:8000/admin/dashboard
+5. **Access the application**
+   - 🏠 Homepage: http://localhost:8000
+   - 🔐 Login: http://localhost:8000/login
+   - 📊 Dashboard: http://localhost:8000/admin/dashboard
 
-## Usage
+## 🔑 Default Login
 
-### Making a Booking (Public)
+- **Email**: `hairdresser@example.com`
+- **Password**: `password`
 
-1. Navigate to the homepage (http://localhost:8000)
-2. Fill in the booking form with:
-   - Your name
-   - Email address
-   - Preferred date (weekdays only)
-   - Time slot (8:00 AM - 5:00 PM)
-3. Submit the form
-4. You'll receive a confirmation message
+## 📋 Requirements
 
-### Viewing Bookings (Hairdresser)
+- PHP >= 8.1
+- Composer
+- MySQL >= 5.7
+- Node.js & NPM
 
-1. Navigate to http://localhost:8000/login
-2. Login with:
-   - Email: hairdresser@example.com
-   - Password: password
-3. You'll be redirected to the dashboard
-4. Or navigate directly to http://localhost:8000/admin/dashboard
-5. View all bookings with client details
+## 🔒 Business Rules
 
-## Business Rules
+- ❌ **No Weekend Bookings**: Saturday and Sunday blocked
+- ⏰ **Business Hours**: 8:00 AM - 5:00 PM only
+- 🎫 **One Per Hour**: Each time slot can only be booked once
+- 📆 **Future Dates**: Today or future dates only
 
-- **Weekend Restriction**: No bookings allowed on Saturday or Sunday
-- **Business Hours**: Bookings only between 8:00 AM and 5:00 PM
-- **One Booking Per Hour**: Each hour slot can only be booked once
-- **Date Validation**: Bookings must be for today or future dates
+## 📁 Project Structure
 
-## Database Schema
+```
+hairdresser-booking/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Admin/DashboardController.php
+│   │   │   └── BookingController.php
+│   │   └── Requests/
+│   │       └── BookingRequest.php
+│   └── Models/
+│       └── Booking.php
+├── database/
+│   ├── migrations/
+│   │   └── *_create_bookings_table.php
+│   └── seeders/
+│       └── HairdresserSeeder.php
+├── resources/
+│   └── views/
+│       ├── admin/dashboard.blade.php
+│       └── bookings/index.blade.php
+└── routes/
+    └── web.php
+```
 
-### bookings table
-- `id` - Primary key
-- `name` - Client name
-- `email` - Client email
-- `date` - Appointment date
-- `hour` - Appointment time
-- `created_at` - Booking timestamp
-- `updated_at` - Last update timestamp
+## 🗄️ Database Schema
 
-### users table (for authentication)
-- Standard Laravel user table for hairdresser authentication
+### `bookings` table
+| Column     | Type      | Description              |
+|------------|-----------|--------------------------|
+| id         | bigint    | Primary key              |
+| name       | varchar   | Client name              |
+| email      | varchar   | Client email             |
+| date       | date      | Appointment date         |
+| hour       | time      | Appointment time         |
+| created_at | timestamp | Booking creation time    |
+| updated_at | timestamp | Last update time         |
 
-## Development
+## 🛠️ Technology Stack
 
-### Running Tests
+- **Backend**: Laravel 10
+- **Database**: MySQL
+- **Frontend**: Bootstrap 5
+- **Build Tool**: Vite
+- **Authentication**: Laravel UI
+
+## 📚 Documentation
+
+For detailed documentation, see [DOCUMENTATION.md](DOCUMENTATION.md)
+
+## 🧪 Testing
+
 ```bash
 php artisan test
 ```
 
-### Code Style
-```bash
-./vendor/bin/pint
-```
+## 🔐 Security
 
-## Security
+- ✅ CSRF protection on all forms
+- ✅ Authentication middleware on admin routes
+- ✅ Input validation and sanitization
+- ✅ SQL injection protection via Eloquent ORM
+- ✅ Registration disabled (admin-only access)
 
-- User registration is disabled (only pre-created hairdresser account)
-- Admin dashboard requires authentication
-- CSRF protection on all forms
-- Input validation and sanitization
+## 📸 Screenshots
 
-## License
+### Public Booking Form
+The homepage displays a user-friendly booking form where customers can schedule appointments.
 
-This is a demo project created for the DevChallenge.
+### Admin Dashboard
+Protected dashboard showing all bookings with client details, sortable and paginated.
 
-## Contact
+## 🚧 Future Enhancements
 
-For questions or issues, please contact the development team.
+- 📧 Email notifications
+- 📱 SMS reminders
+- 📅 Calendar view
+- 💳 Payment integration
+- 👥 Multiple hairdressers
+- 📊 Reports & analytics
+
+## 🤝 Contributing
+
+This is a demo project for DevChallenge. Feel free to fork and modify.
+
+## 📝 License
+
+This project is open-sourced software for demonstration purposes.
+
+## 👨‍💻 Developer
+
+Created for StartUpHUB DevChallenge - November 2025
+
+---
+
+**Need Help?** Check [DOCUMENTATION.md](DOCUMENTATION.md) for detailed setup and usage instructions.
+
 
