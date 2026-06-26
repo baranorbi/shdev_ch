@@ -22,9 +22,9 @@ Evaluation criteria:
 - Git hygiene (commits, messages)
 - Clear reasoning documented in your notes
 
-Task menu (pick any):
+### Task menu (pick any):
 
-Level 1 — Core API and Validation
+### Level 1 — Core API and Validation
 1. Create a basic booking endpoint
    - POST `/api/bookings`
    - Accept: client email, hairdresser ID, date, start time
@@ -44,7 +44,7 @@ Level 1 — Core API and Validation
 5. Basic API listing
    - GET `/api/bookings?email=...` to list a client's bookings
 
-Level 3 — Enhancements (pick any)
+### Level 3 — Enhancements (pick any)
 6. Email notifications
    - Notify hairdresser on new booking
    - Send confirmation email to client on success
@@ -55,7 +55,7 @@ Level 3 — Enhancements (pick any)
 8. Calendar view or improved UI/UX for booking
    - Visualize available slots; disable weekends and occupied times
 
-Level 4 — Architecture & Quality
+### Level 4 — Architecture & Quality
 9. Service layer and validation hardening
    - Extract booking creation logic into a dedicated service (with a simple DTO)
    - Use Form Requests for validation; return consistent error schema
@@ -66,7 +66,7 @@ Level 4 — Architecture & Quality
 11. Continuous Integration (CI)
    - Add a GitHub Actions workflow running tests, static analysis (phpstan/psalm), and code style (pint)
 
-Level 5 — Scalability & Resilience
+### Level 5 — Scalability & Resilience
 12. Idempotency and rate limiting
    - Support `Idempotency-Key` for POST `/api/bookings` to avoid duplicate bookings on retries
    - Add sensible rate limits and return 429 with retry hints
@@ -77,7 +77,7 @@ Level 5 — Scalability & Resilience
    - Ensure race conditions cannot create double bookings (transaction + unique index/lock)
    - Add tests simulating concurrent requests
 
-Level 6 — Data & Reporting
+### Level 6 — Data & Reporting
 
 15. Admin export
    - Export bookings to CSV for a selected date range
@@ -89,7 +89,7 @@ Level 6 — Data & Reporting
    - Add DB indexes for frequent queries; measure impact
    - Detect/fix N+1 issues in dashboard/listing
 
-Stretch Ideas (optional)
+### Stretch Ideas (optional)
 - Cancellation/reschedule policy with constraints
 - Rate limiting or idempotency for booking endpoint
 - Observability (structured logs, simple metrics)
