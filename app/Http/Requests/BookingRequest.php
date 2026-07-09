@@ -4,11 +4,11 @@ namespace App\Http\Requests;
 
 use App\Models\Booking;
 use Carbon\Carbon;
+use Illuminate\Contracts\Validation\Validator as ValidatorContract;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Contracts\Validation\Validator as ValidatorContract;
-use Illuminate\Validation\Validator;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Validator;
 
 class BookingRequest extends FormRequest
 {
@@ -59,6 +59,7 @@ class BookingRequest extends FormRequest
 
             if (! $scheduledAt) {
                 $validator->errors()->add('hour', 'Please select a valid appointment time.');
+
                 return;
             }
 

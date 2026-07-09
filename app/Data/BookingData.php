@@ -10,11 +10,10 @@ final class BookingData
         public readonly string $name,
         public readonly string $email,
         public readonly Carbon $scheduledAt,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param array{name:string,email:string,date:string,hour:string} $validated
+     * @param  array{name:string,email:string,date:string,hour:string}  $validated
      */
     public static function fromValidated(array $validated): self
     {

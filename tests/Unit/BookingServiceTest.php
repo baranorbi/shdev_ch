@@ -14,7 +14,7 @@ class BookingServiceTest extends TestCase
 
     public function test_it_persists_booking_from_dto(): void
     {
-        $service = new BookingService();
+        $service = new BookingService;
         $scheduledAt = Carbon::create(2026, 7, 13, 11, 0, 0);
 
         $booking = $service->create(new BookingData(

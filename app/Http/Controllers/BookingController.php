@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\BookingRequest;
 use App\Data\BookingData;
+use App\Http\Requests\BookingRequest;
 use App\Services\BookingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -11,9 +11,7 @@ use Illuminate\View\View;
 
 class BookingController extends Controller
 {
-    public function __construct(private readonly BookingService $bookingService)
-    {
-    }
+    public function __construct(private readonly BookingService $bookingService) {}
 
     /**
      * Display the booking form.
