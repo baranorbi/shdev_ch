@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Booking;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,11 +12,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        $this->call(HairdresserSeeder::class);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        Booking::query()->delete();
+
+        Booking::factory()
+            ->count(20)
+            ->sequence(fn ($sequence) => [
+                'scheduled_at' => now()->addWeekdays($sequence->index + 1)->setTime(9 + ($sequence->index % 8), 0),
+            ])
+            ->create();
     }
 }
