@@ -2,10 +2,13 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Validator;
 use App\Models\Booking;
 use Carbon\Carbon;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator as ValidatorContract;
+use Illuminate\Validation\Validator;
+use Illuminate\Validation\ValidationException;
 
 class BookingRequest extends FormRequest
 {
@@ -15,6 +18,16 @@ class BookingRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'name' => is_string($this->input('name')) ? trim($this->input('name')) : $this->input('name'),
+            'email' => is_string($this->input('email')) ? trim($this->input('email')) : $this->input('email'),
+            'date' => is_string($this->input('date')) ? trim($this->input('date')) : $this->input('date'),
+            'hour' => is_string($this->input('hour')) ? trim($this->input('hour')) : $this->input('hour'),
+        ]);
     }
 
     /**
@@ -38,31 +51,43 @@ class BookingRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function ($validator) {
-            $date = $this->input('date');
-            $hour = $this->input('hour');
+            if ($validator->errors()->has('date') || $validator->errors()->has('hour')) {
+                return;
+            }
 
-            if ($date && $hour) {
-                // Check if weekend
-                $carbonDate = Carbon::parse($date);
-                if ($carbonDate->isWeekend()) {
-                    $validator->errors()->add('date', 'Bookings are not available on weekends.');
-                }
+            $scheduledAt = $this->scheduledAt();
 
-                // Check business hours (8:00 AM - 5:00 PM)
-                $hourTime = Carbon::createFromFormat('H:i', $hour);
-                if ($hourTime->hour < 8 || $hourTime->hour >= 17) {
-                    $validator->errors()->add('hour', 'Bookings are only available between 8:00 AM and 5:00 PM.');
-                }
+            if (! $scheduledAt) {
+                $validator->errors()->add('hour', 'Please select a valid appointment time.');
+                return;
+            }
 
-                // Combine into scheduled_at and check if the time slot is already booked
-                $scheduledAt = Carbon::parse($date . ' ' . $hour . ':00');
-                $exists = Booking::where('scheduled_at', $scheduledAt)->exists();
+            if ($scheduledAt->isWeekend()) {
+                $validator->errors()->add('date', 'Bookings are not available on weekends.');
+            }
 
-                if ($exists) {
-                    $validator->errors()->add('hour', 'This time slot is already booked. Please choose another time.');
-                }
+            if ($scheduledAt->hour < 8 || $scheduledAt->hour >= 17) {
+                $validator->errors()->add('hour', 'Bookings are only available between 8:00 AM and 5:00 PM.');
+            }
+
+            if (Booking::where('scheduled_at', $scheduledAt)->exists()) {
+                $validator->errors()->add('hour', 'This time slot is already booked. Please choose another time.');
             }
         });
+    }
+
+    protected function failedValidation(ValidatorContract $validator): void
+    {
+        if ($this->expectsJson()) {
+            throw new HttpResponseException(response()->json([
+                'message' => 'Validation failed.',
+                'errors' => $validator->errors(),
+            ], 422));
+        }
+
+        throw (new ValidationException($validator))
+            ->errorBag($this->errorBag)
+            ->redirectTo($this->getRedirectUrl());
     }
 
     /**
@@ -79,5 +104,17 @@ class BookingRequest extends FormRequest
             'hour.required' => 'Please select a time.',
             'hour.date_format' => 'Please select a valid time in HH:MM format.',
         ];
+    }
+
+    private function scheduledAt(): ?Carbon
+    {
+        try {
+            return Carbon::createFromFormat(
+                'Y-m-d H:i',
+                $this->input('date').' '.$this->input('hour')
+            );
+        } catch (\Throwable) {
+            return null;
+        }
     }
 }

@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email');
-            $table->date('date');
-            $table->time('hour');
+            $table->dateTime('scheduled_at');
+            $table->unique('scheduled_at', 'bookings_scheduled_at_unique');
             $table->timestamps();
         });
     }
